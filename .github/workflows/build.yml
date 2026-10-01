@@ -19,7 +19,11 @@ jobs:
           gradle-version: 8.7
       - name: Build debug APK
         working-directory: Win10SimApk
-        run: gradle assembleDebug
+        shell: bash
+        run: gradle assembleDebug --console=plain 2>&1 | tee ../build.log
+      - name: Show the errors
+        if: failure()
+        run: grep -n -B2 -A4 -E "error:|e: " build.log | head -60
       - uses: actions/upload-artifact@v4
         with:
           name: Win10Sim-APK
